@@ -1,5 +1,6 @@
 <?php
 /* -*- coding: utf-8 -*-
+ * Copyright 2024 SUSE LLC
  * Copyright 2015 Okta, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,35 +16,33 @@
  * limitations under the License.
  */
 
-require('../simplesamlphp/lib/_autoload.php');
+require('../simplesamlphp/src/_autoload.php');
 session_start();
 
 $bootstrap_cdn_css_url = '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css';
-$bootstrap_cdn_js_url  = '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js';
-$jquery_cdn_url        = '//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js';
 
 $title = 'SimpleSAMLphp Example SAML SP';
 $user_session_key = 'user_session';
 $saml_sso = 'saml_sso';
 
 // If the user is logged in and requesting a logout.
-if (isset($_SESSION[$user_session_key]) && isset($_REQUEST['logout'])) {
-   $sp = $_SESSION[$user_session_key]['sp'];
-   unset($_SESSION[$user_session_key]);
-   $as = new SimpleSAML_Auth_Simple($sp);
+if (isset($_REQUEST['logout'])) {
+   $sp = $_REQUEST[$saml_sso];
+   $as = new \SimpleSAML\Auth\Simple($sp);
    $as->logout(["ReturnTo" => $_SERVER['PHP_SELF']]);
+   error_log(print_r("logout", TRUE));
 }
 
 // If the user is logging in.
 if (isset($_REQUEST[$saml_sso])) {
     $sp = $_REQUEST[$saml_sso];
-    $as = new SimpleSAML_Auth_Simple($sp);
+    error_log(print_r($sp, TRUE));
+    $as = new \SimpleSAML\Auth\Simple($sp);
     $as->requireAuth();
     $user = array(
         'sp'         => $sp,
         'authed'     => $as->isAuthenticated(),
         'idp'        => $as->getAuthData('saml:sp:IdP'),
-        'nameId'     => $as->getAuthData('saml:sp:NameID')['Value'],
         'attributes' => $as->getAttributes(),
     );
     
@@ -75,7 +74,7 @@ if (isset($_REQUEST[$saml_sso])) {
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
 	  <?php if(isset($_SESSION[$user_session_key])) { ?>
-            <li><a href="?logout=true">Logout</a></li>
+            <li><a href="?saml_sso=<?= $_SESSION[$user_session_key]['sp'] ?>&logout=true">Logout</a></li>
 	  <?php } ?>
           </ul>
         </div><!--/.nav-collapse -->
@@ -97,17 +96,12 @@ if (isset($_REQUEST[$saml_sso])) {
       </div>
     <?php
       } else {
-        $sources = SimpleSAML_Auth_Source::getSources();
     ?>
       <p class="lead">Select the IdP you want to use to authenticate:</p>
       <ol>
-        <?php foreach($sources as $source) { ?>
-        <li><a href="?<?= $saml_sso ?>=<?= $source ?>"><?= $source ?></a></li>
-	<?php } ?>
+        <li><a href="?saml_sso=example-ldap">LDAP</a></li>
       </ol>
     <?php } ?>
     </div>
-    <script src="<?= $bootstrap_cdn_js_url ?>"></script>
-    <script src="<?= $jquery_cdn_url ?>"></script>
   </body>
 </html>
