@@ -116,6 +116,48 @@ table {
 .logout {
   margin-top: 1em;
 }
+
+@font-face {
+  font-family: "SUSE";
+  src:url("fonts/SUSE-Thin.woff2");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "SUSE";
+  src:url("fonts/SUSE-Light.woff2");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "SUSE";
+  src:url("fonts/SUSE-Regular.woff2");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "SUSE";
+  src:url("fonts/SUSE-Medium.woff2");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "SUSE";
+  src:url("fonts/SUSE-SemiBold.woff2");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "SUSE";
+  src:url("fonts/SUSE-Bold.woff2");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "SUSE";
+  src:url("fonts/SUSE-ExtraBold.woff2");
+  font-weight: 800;
+}
     </style>
   </head>
   <body>
