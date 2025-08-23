@@ -1,6 +1,6 @@
 <?php
 /* -*- coding: utf-8 -*-
- * Copyright 2024 SUSE LLC
+ * Copyright 2024-2025 SUSE LLC
  * Copyright 2015 Okta, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,6 @@
 
 require('../simplesamlphp/src/_autoload.php');
 session_start();
-
-$bootstrap_cdn_css_url = '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css';
 
 $title = 'SimpleSAMLphp Example SAML SP';
 $user_session_key = 'user_session';
@@ -54,38 +52,100 @@ if (isset($_REQUEST[$saml_sso])) {
 <html>
   <head>
     <title><?= $title ?></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link href="<?= $bootstrap_cdn_css_url ?>" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="https://www.suse.com/assets/css/boxes-styles.css" type="text/css"/>
+    <style>
+.navbar {
+  height: 3em;
+  padding: 0;
+  color: white;
+  background-color: #0c322c;
+}
+
+.navbar-brand {
+  margin-left: 1em;
+  padding-top: 5px;
+}
+
+.navbar-text {
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.navbar-end-line {
+  display: flex;
+  height: 8px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  z-index: 1031; }
+
+.header-end-line-persimmon {
+  background-color: #FE7C3F;
+  width: 25%; }
+
+.header-end-line-green {
+  background-color: #30BA78;
+  width: 45%; }
+
+.header-end-line-waterhole-blue {
+  background-color: #2453ff;
+  width: 10%; }
+
+.header-end-line-mint {
+  background-color: #90ebcd;
+  width: 20%; }
+
+.content {
+  margin-top: 10px;
+  margin-left: 3em;
+}
+
+body h1 {
+  margin-bottom: 0.3em;
+}
+
+table {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin:0;
+  padding:0;
+  width: 100%;
+}
+
+.logout {
+  margin-top: 1em;
+}
+    </style>
   </head>
-  <body style="padding-top: 60px">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-	  <!-- this is what makes the "hamburger" icon -->
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/"><?= $title ?></a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-	  <?php if(isset($_SESSION[$user_session_key])) { ?>
-            <li><a href="?saml_sso=<?= $_SESSION[$user_session_key]['sp'] ?>&logout=true">Logout</a></li>
-	  <?php } ?>
-          </ul>
-        </div><!--/.nav-collapse -->
+  <body>
+    <!-- BEGIN top bar -->
+    <nav class="navbar">
+      <div>
+	<div class="navbar-text">
+          Dummy web application
+	</div>
+	<div class="navbar-brand">
+          <a href="#">
+            <img alt="SUSE Logo" src="https://static.scc.suse.com/assets/suse-white-logo-green-9f0302c0fa1761b18a9779355da14916d6d37208ac95ad4db2856f73b71aa8c7.svg">
+          </a>
+	</div>
       </div>
     </nav>
-    <div class="container">
+    <div class="navbar-end-line">
+      <div class="header-end-line-persimmon"></div>
+      <div class="header-end-line-green"></div>
+      <div class="header-end-line-waterhole-blue"></div>
+      <div class="header-end-line-mint"></div>
+    </div>
+    <!-- END top bar -->
+
+    <div class="content">
     <?php if(isset($_SESSION[$user_session_key])) { ?>
       <h1>Logged in</h1>
-      <p class="lead">Contents of the most recent SAML assertion:</p>
-      <div class="col-md-8">
-        <table class="table">
+      <p >Contents of the most recent SAML assertion:</p>
+      <div>
+        <table>
 	<?php foreach($_SESSION[$user_session_key]['attributes'] as $key => $value) { ?>
           <tr>
             <td><?= $key ?></td>
@@ -97,10 +157,15 @@ if (isset($_REQUEST[$saml_sso])) {
     <?php
       } else {
     ?>
-      <p class="lead">Select the IdP you want to use to authenticate:</p>
-      <ol>
-        <li><a href="?saml_sso=example-ldap">LDAP</a></li>
-      </ol>
+      <h1>Not logged in</h1>
+      <p>
+        <a href="?saml_sso=example-ldap">Log in</a>
+      </p>
+    <?php } ?>
+    <?php if(isset($_SESSION[$user_session_key])) { ?>
+    <div class="logout">
+      <a href="?saml_sso=<?= $_SESSION[$user_session_key]['sp'] ?>&logout=true">Logout</a>
+    </div>
     <?php } ?>
     </div>
   </body>
